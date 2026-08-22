@@ -1,3 +1,6 @@
+🇫🇷 [Lire en français](README.fr.md) | 🇬🇧 English version below
+
+---
 # Customer Churn Prediction
 
 A machine learning project predicting customer churn for a telecom company, 
@@ -194,3 +197,4 @@ pytest tests/ -v
 - **Interpretability:** SHAP
 - **Testing:** pytest
 - **Environment:** Jupyter Notebook, VS Code
+
