@@ -88,6 +88,25 @@ def show_feature_importance(model, feature_names):
 
     return top_features
 
+def explain_with_shap(model, X_test, feature_names, sample_size=200):
+    """Generate SHAP explanations for a sample of the test set."""
+    import shap
+
+    # Using a sample for speed (SHAP can be slow on large datasets)
+    X_sample = X_test.sample(n=min(sample_size, len(X_test)), random_state=42)
+
+    explainer = shap.LinearExplainer(model, X_sample)
+    shap_values = explainer.shap_values(X_sample)
+
+    # Summary plot: shows the impact and direction of each feature across many predictions
+    plt.figure()
+    shap.summary_plot(shap_values, X_sample, feature_names=feature_names, show=False)
+    plt.tight_layout()
+    plt.savefig(f"{FIGURES_DIR}/shap_summary.png", dpi=150, bbox_inches="tight")
+    plt.show()
+
+    return explainer, shap_values
+
 
 def main():
     print("Loading test data and model...")
@@ -116,8 +135,11 @@ def main():
     print("\nTop features:")
     print(top_features)
 
-    print("\nDone. Figures saved in reports/figures/")
+    print("Generating SHAP explanations...")
+    X_test_scaled_df = pd.DataFrame(X_test_scaled, columns=X_test.columns)
+    explain_with_shap(model, X_test_scaled_df, X_test.columns)
 
+    print("\nDone. Figures saved in reports/figures/")
 
 if __name__ == "__main__":
     main()
